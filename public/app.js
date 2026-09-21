@@ -50,12 +50,33 @@ async function refresh() {
 
 const form = document.querySelector('#form');
 
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
     const title = formData.get('title');
     const price = Number(formData.get('price'));
-    console.log({ title, price });
-})
+        try {
+            const res = await fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, price })
+            });
+
+        if (!res.ok) {
+            const data = await res.json();
+            errorBox.textContent = data.error || 'Сталася помилка при збереженні';
+            return;
+        }
+        const result = await res.json();
+        console.log('Товар успішно додано:', result);
+        form.reset();
+        refresh();
+
+    } catch (err) {
+        errorBox.textContent = 'Не вдалося зʼєднатися з сервером';
+    }
+});
 
 refresh();
