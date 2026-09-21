@@ -72,7 +72,7 @@ form.addEventListener('submit', async (e) => {
         const result = await res.json();
         console.log('Товар успішно додано:', result);
         form.reset();
-        refresh();
+        await refresh();
 
     } catch (err) {
         errorBox.textContent = 'Не вдалося зʼєднатися з сервером';
